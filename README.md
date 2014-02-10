@@ -1,4 +1,6 @@
-dfna-example
-============
+# dfna-example
 
-DreamFactory Services Platform(tm) DFNA Services
+## DreamFactory Services Platform&trade; DFNA Example
+
+An application that demonstrates the DSP WFA API
+

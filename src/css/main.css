@@ -1,0 +1,274 @@
+/**************************************************************************
+** General Classes
+**************************************************************************/
+
+html, body {
+	height:      100%;
+	font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+	/* The html and body elements cannot have any padding or margin. */
+}
+
+code {
+	font-size: 80%;
+}
+
+pre {
+	-moz-tab-size: 2;
+	-ms-tab-size:  2;
+	-o-tab-size:   2;
+	tab-size:      2;
+}
+
+form {
+	padding-top: 11px;
+}
+
+h3 {
+	margin-bottom: 4px;
+}
+
+section {
+	margin-bottom: 4px;
+}
+
+.container section:last-child {
+	margin-bottom: 14px;
+}
+
+a:hover, a:focus {
+	text-decoration: none;
+}
+
+label {
+	font-size: 13px;
+}
+
+optgroup {
+	margin-left:   0;
+	margin-right:  0;
+	padding-left:  4px;
+	padding-right: 4px;
+}
+
+/**************************************************************************
+** Specific Classes
+**************************************************************************/
+
+/* Wrapper for page content to push down footer */
+#wrap {
+	min-height: 100%;
+	/*noinspection CssOverwrittenProperties*/
+	height:     auto !important;
+	/*noinspection CssOverwrittenProperties*/
+	height:     100%;
+	/* Negative indent footer by its height */
+	margin:     0 auto -64px;
+	/* Pad bottom by footer height */
+	padding:    0 0 64px;
+	/** Hide bottom scroll when pushing */
+	overflow-x: hidden;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+	background-color: #ccc;
+	height:           64px;
+	width:            100%;
+}
+
+#wrap > .container {
+	padding: 32px 15px 0 15px;
+}
+
+#wrap > .container h1:first-of-type {
+	border-bottom: 1px solid #efefef;
+	font-family:   'Lato', 'Helvetica Neue Light', Arial, sans-serif;
+}
+
+#footer > .container {
+	padding-left:  15px;
+	padding-right: 15px;
+	padding-top:   4px;
+}
+
+/** Footer **/
+#footer ul, ol {
+	margin-bottom: 0;
+}
+
+#footer .social-links {
+	margin-top: 4px;
+}
+
+#footer > .container p {
+	margin-bottom: 0;
+}
+
+#footer .fa {
+	color:       #000;
+	text-shadow: 0 -1px 0 #5c5c5c;
+}
+
+.df-header {
+	box-shadow: 0 1px 2px #999;
+}
+
+.df-header .navbar-nav > li > a {
+	font-weight:        normal;
+	color:              #FFFFFF;
+	opacity:            0.80;
+	-webkit-transition: opacity 1s ease-out;
+	transition:         opacity 1s ease-out;
+}
+
+.df-header .navbar-nav > .active > a, .df-header .navbar-nav > .active > a:hover {
+	opacity: 1;
+}
+
+.df-header .navbar-nav > li > a:hover {
+	opacity:            1;
+	-webkit-transition: opacity 0.25s ease-in;
+	transition:         opacity 0.25s ease-in;
+}
+
+.inner-content {
+	padding: 40px 14px 0;
+}
+
+ul li a:hover {
+	text-decoration: none;
+}
+
+#live-api {
+	overflow: auto;
+	margin:   20px;
+	width:    98%;
+}
+
+.navbar .navbar-header .navbar-brand.df-title {
+	padding:        8px 10px;
+	font-size:      21px;
+	letter-spacing: -1px;
+	font-weight:    700;
+	color:          #efefef;
+	font-family:    'Lato', 'Helvetica Neue Light', Arial, sans-serif;
+	text-shadow:    0 1px 0 #e5e5ee;
+}
+
+.navbar.navbar-inverse .navbar-header .navbar-brand.df-title {
+	text-shadow: 0 -1px 0 #5c5c5c;
+}
+
+.collapsing {
+	transition: height 0.1s ease-in-out;
+}
+
+.brand-wrap {
+	width: 100%;
+}
+
+.brand-wrap img {
+	vertical-align: top;
+	margin-top:     8px;
+	display:        inline-block;
+	float:          left;
+	margin-left:    15px
+}
+
+.brand-wrap small {
+	font-size:   11px;
+	color:       rgba(245, 198, 129, 1);
+	float:       left;
+	text-align:  right;
+	line-height: 11px;
+	border-top:  1px solid rgba(245, 198, 129, 0.25);
+	padding:     2px 0 0;
+	margin:      -8px 0 0 12px;
+	width:       90%;
+}
+
+.dropdown-item-small {
+	font-size: 10pt;
+}
+
+.panel-title {
+	font-size: 17px;
+}
+
+.panel-title a, .panel-title a:hover {
+	text-decoration: none;
+}
+
+#_request-headers {
+	margin-bottom: 1px;
+}
+
+.help-block {
+	margin-top: 1px;
+	color:      #a3a3a3;
+	font-size:  11px;
+}
+
+i.fa-plus-square {
+	margin-right: 8px;
+}
+
+.form-buttons {
+	float:        right;
+	margin-right: 15px;
+}
+
+#loading-indicator {
+	display: none;
+}
+
+div[id$="-status"] {
+	margin-left: 8px;
+}
+
+#provider-auth-check {
+	padding: 7px;
+}
+
+#provider-auth-check i.fa {
+	margin-right: 6px;
+}
+
+i.status-icon {
+	margin:        4px;
+	padding:       4px;
+	border-radius: 4px;
+	width:         24px;
+	height:        24px;
+	text-align:    center;
+}
+
+.muted {
+	font-weight:   normal;
+	color:         #aaa;
+	padding-right: 4px;
+}
+
+/**************************************************************************
+** Media Queries
+**************************************************************************/
+
+@media (max-width: 480px) {
+	#footer {
+		width: 472px;
+	}
+}
+
+/** iPhone 5 */
+@media only screen and (max-device-width: 640px) {
+	#footer {
+		width: 632px;
+	}
+}
+
+/** iPhone 4 */
+@media only screen and (max-device-width: 480px) {
+	#footer {
+		width: 472px;
+	}
+}
