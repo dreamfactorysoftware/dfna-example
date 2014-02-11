@@ -1,0 +1,72 @@
+{
+	"name":              "dreamfactory/dfna-example",
+	"description":       "DreamFactory Services Platform(tm) DFNA Example",
+	"keywords":          ["netapp", "dsp", "examples"],
+	"type":              "dreamfactory-plugin",
+	"license":           ["Apache-2.0"],
+	"authors":           [
+		{
+			"name":  "Jerry Ablan",
+			"email": "jerryablan@dreamfactory.com"
+		}
+	],
+	"support":           {
+		"email":  "support@dreamfactory.com",
+		"issues": "https://github.com/dreamfactorysoftware/dfna-example/issues",
+		"wiki":   "https://github.com/dreamfactorysoftware/dfna-example/wiki",
+		"source": "https://github.com/dreamfactorysoftware/dfna-example"
+	},
+	"config":            {
+		"discard-changes": true
+	},
+	"minimum-stability": "dev",
+	"repositories":      [
+		{
+			"type": "pear",
+			"url":  "http://pear.php.net"
+		}
+	],
+	"require":           {
+		"php":                            ">=5.3.18",
+		"kisma/kisma":                    "@stable",
+		"dreamfactory/package-installer": "@stable"
+	},
+	"require-dev":       {
+		"dreamfactory/lib-php-common-platform": "@stable",
+		"phpunit/phpunit":                      "@stable",
+		"phpunit/phpunit-mock-objects":         "@stable",
+		"phpunit/phpunit-selenium":             "@stable",
+		"phpunit/phpunit-story":                "@stable",
+		"phpunit/dbunit":                       "@stable",
+		"phpunit/php-code-coverage":            "@stable",
+		"phpunit/php-text-template":            "@stable",
+		"phpunit/php-token-stream":             "@stable",
+		"phpunit/php-timer":                    "@stable",
+		"phpunit/php-invoker":                  "@stable"
+	},
+	"extra":             {
+		"branch-alias": {
+			"dev-develop": "1.1.0-dev"
+		},
+		"data":         {
+			"application": {
+				"name":              "DFNA Example",
+				"api-name":          "dfna",
+				"description":       "A sample application that demonstrates the DSP's WFA remote access.",
+				"start-url":         "/index.php",
+				"url-is-external":   false,
+				"import-url":        "https://github.com/dreamfactorysoftware/dfna-example/archive/master.zip",
+				"active":            true,
+				"fullscreen":        false,
+				"fullscreen-toggle": true,
+				"toggle-location":   "top"
+			}
+		},
+		"links":        [
+			{
+				"target": "src/",
+				"link":   "dfna"
+			}
+		]
+	}
+}
