@@ -31,9 +31,9 @@
 	<script src="js/respond.min.js"></script>    <![endif]-->
 
 	<link rel="icon" href="img/apple-touch-icon.png" type="image/png">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" type="text/css" media="screen">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css" type="text/css">
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" type="text/css">
-	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato">
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto">
 
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" />
 </head>

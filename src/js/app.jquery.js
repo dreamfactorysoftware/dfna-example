@@ -35,7 +35,7 @@ var _options = {
 	/** @var {*} **/
 	scrollPane:          null,
 	/** @var string **/
-	defaultUri:          '/user',
+	defaultUri:          '/users',
 	/** @var {*} **/
 	currentProvider:     {},
 	/** @var bool */
@@ -118,40 +118,6 @@ var _loading = function(which) {
 };
 
 /**
- * A little URL builder
- * @param resource
- * @param [excludeBase] If TRUE, the base URL will *NOT* be prepended to the returned endpoint
- * @returns {string}
- * @private
- */
-var _getEndpoint = function(resource, excludeBase) {
-	return ( excludeBase ? '' : _options.baseUrl ) + resource;
-};
-
-/**
- * A System URL builder
- * @param resource
- * @param [excludeBase] If TRUE, the base URL will *NOT* be prepended to the returned endpoint
- * @returns {string}
- * @private
- */
-var _getSystemEndpoint = function(resource, excludeBase) {
-	return _getEndpoint('/rest/system/' + resource, excludeBase);
-};
-
-/**
- * A Portal URL builder
- * @param portal
- * @param [excludeBase] If TRUE, the base URL will *NOT* be prepended to the returned endpoint
- * @returns {string}
- * @private
- */
-var _getDefaultEndpoint = function(portal, excludeBase) {
-	var _dfnaResource = $('#dfna-list').find('option').filter(':selected').data('dfna-resource');
-	return _getEndpoint(_dfnaResource, excludeBase);
-};
-
-/**
  * Shows the results pretty-printed
  * @param data
  * @param [pretty]
@@ -163,7 +129,7 @@ var _showResults = function(data, pretty) {
 		_options.$.results.html(data);
 	}
 	else {
-		_options.$.results.html('<pre class="prettyprint linenums">' + JSON.stringify(data, null, '\t') + '</pre>');
+		_options.$.results.html('<pre class="prettyprint">' + _encodeXml(data) + '</pre>');
 
 		//noinspection JSUnresolvedFunction
 		PR.prettyPrint();
@@ -171,6 +137,17 @@ var _showResults = function(data, pretty) {
 
 	window.location.hash = 'dfna-results';
 	return true;
+};
+
+/**
+ *
+ * @param source
+ * @returns {XML|string|Ext.dom.Element}
+ * @private
+ */
+var _encodeXml = function(source) {
+	return source.replace(/&/ig, "&amp;").replace(/</ig, "&lt;").replace(/>/ig, "&gt;").replace(/"/ig, "&quot;").replace(/±/ig, "&plusmn;").replace(/©/ig,
+		"&copy;").replace(/®/ig, "&reg;").replace(/ya'll/ig, "ya'll");
 };
 
 /**
@@ -196,6 +173,8 @@ var _execute = function() {
 	var _uri = _options.$.request.uri.val();
 	var _app = _options.$.request.app.val() || _options.APPLICATION_NAME;
 	var _raw = _options.$.request.body.val();
+	var _token = _options.$.request.token.val();
+	var _server = _options.$.request.server.html();
 	var $_code = _options.$.results;
 
 	if (!_uri || !_uri.length) {
@@ -203,7 +182,7 @@ var _execute = function() {
 		return false;
 	}
 
-	_uri += ( -1 == _uri.indexOf('?') ? '?' : '&') + 'flow_type=1&referrer=' + _getReferrer(true);
+	_uri += ( -1 == _uri.indexOf('?') ? '?' : '&') + 'format=json';
 
 	$_code.empty().html('<small>Loading...</small>');
 
@@ -215,18 +194,18 @@ var _execute = function() {
 		}
 
 		$.ajax({
-			url:         _uri,
+			url: _server + _uri,
 			async:       true,
 			type:        _method,
-			dataType:    'json',
 			cache:       false,
-			processData: false,
+//			processData: false,
 			data:        _body,
 			beforeSend:  function(xhr) {
 				_loading(true);
 
 				if (_app) {
 					xhr.setRequestHeader('X-DreamFactory-Application-Name', _app);
+					xhr.setRequestHeader('X-DreamFactory-Session-Token', _token);
 				}
 			},
 			success:     function(data) {
@@ -235,33 +214,22 @@ var _execute = function() {
 			error:       function(err) {
 				var _json = {};
 
-				if (err.responseJSON) {
-					_json = err.responseJSON.error[0];
-				}
-				else if (err.responseText) {
-					_json = JSON.parse(err.responseText);
-					if (!_json) {
-						_json = err.responseText;
+				try {
+					if (err.responseJSON) {
+						_json = err.responseJSON.error[0];
 					}
+					else if (err.responseText) {
+						_json = JSON.parse(err.responseText);
+						if (!_json) {
+							_json = err.responseText;
+						}
+					}
+				}
+				catch (_ex) {
+					//	Ignore
 				}
 
-				if (302 == err.status || 307 == err.status) {
-					var _location = _json.location || err.location;
-					if (!_location) {
-						_location = _getAuthorizationUrl(_options.currentProvider);
-					}
-
-					if (!_location) {
-						_showResults('<div class="alert alert-fixed alert-danger"><strong>Authorization Required</strong><p>However, the authorization URL cannot be determined.</p></div>',
-							false);
-					}
-					else {
-						_showAuthorizeUrl(_location);
-					}
-				}
-				else {
-					_showResults('Error: ' + err.status, false);
-				}
+				_showResults('Error: ' + err.status + '<br />' + err.responseText, false);
 			},
 			complete:    function() {
 				_loading(false);
@@ -290,11 +258,12 @@ var _initialize = function() {
 	_options.$.loading = $('#loading-indicator');
 	_options.$.results = $('#example-code');
 
-	_options.$.request.server = $('#request-server');
+	_options.$.request.server = $('span#request-server.input-group-addon.muted');
 	_options.$.request.app = $('#request-app');
 	_options.$.request.method = $('#request-method');
 	_options.$.request.uri = $('#request-uri');
 	_options.$.request.body = $('#request-body');
+	_options.$.request.token = $('#request-token');
 	_options.$.request.elapsed = $('#request-elapsed');
 
 	_options.$.status.revoke = $('#revoke-auth-status');
@@ -302,9 +271,6 @@ var _initialize = function() {
 	_options.$.status.check = $('#dfna-auth-check');
 
 	_reset();
-
-	//	Load providers
-	_loadProvider();
 };
 
 /**

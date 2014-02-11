@@ -20,9 +20,11 @@
  */
 use DreamFactory\Platform\Exceptions\InternalServerErrorException;
 use DreamFactory\Platform\Utility\Platform;
+use DreamFactory\Platform\Utility\ResourceStore;
 use DreamFactory\Platform\Yii\Models\App;
 use DreamFactory\Yii\Utility\Pii;
 use Kisma\Core\Utility\Curl;
+use Kisma\Core\Utility\HtmlMarkup;
 
 //*************************************************************************
 //	Constants
@@ -31,15 +33,18 @@ use Kisma\Core\Utility\Curl;
 /**
  * @var string
  */
-const APPLICATION_NAME = 'dfna-example';
+const APPLICATION_NAME = 'dfna';
+/**
+ * @type bool If true, current URL will be used to determine WFA DSP URL
+ */
+const USE_LOCALHOST = false;
 
 //********************************************************************************
 //* Bootstrap and Debugging
 //********************************************************************************
 
-$_path = ( is_link( __DIR__ ) ? readlink( __DIR__ ) : __DIR__ );
 /** @noinspection PhpIncludeInspection */
-require_once $_path . '/../vendor/autoload.php';
+require_once __DIR__ . '/../autoload.php';
 
 //	Debugging?
 if ( \Kisma::getDebug() )
@@ -86,7 +91,9 @@ if ( !empty( $_models ) )
 	unset( $_models );
 }
 
-$_defaultUrl = 'users';
+$_baseUrl = ( USE_LOCALHOST ? Curl::currentUrl( false, false ) : 'https://dfna-server.cloud.dreamfactory.com' ) . '/rest/wfa';
+$_defaultToken = 'b4hrvo7dgh15s9ficugall34l7';
+$_defaultUri = '/users';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -114,24 +121,25 @@ $_defaultUrl = 'users';
 						<div class="panel-body">
 							<form class="form-horizontal" id="call-settings-form">
 								<div class="form-group">
-									<label for="request-uri" class="col-sm-2 control-label">Resource</label>
+									<label for="request-uri" class="col-md-1 control-label">Resource</label>
 
-									<div class="col-sm-10">
+									<div class="col-md-11">
 										<div class="input-group">
 											<span id="request-server" class="input-group-addon muted">https://*.cloud.dreamfactory.com/rest/wfa/</span>
 
 											<input type="text"
 												   class="form-control"
 												   id="request-uri"
-												   value="<?php echo $_defaultUrl; ?>"
+												   value="<?php echo $_defaultUri; ?>"
 												   placeholder="The request URI (i.e. /user)">
 										</div>
 									</div>
 								</div>
-								<div class="form-group row">
-									<label for="request-method" class="col-sm-2 control-label">Method</label>
 
-									<div class="col-sm-4">
+								<div class="form-group row">
+
+									<label for="request-method" class="col-md-1 control-label">Method</label>
+									<div class="col-md-3">
 										<select class="form-control" id="request-method">
 											<option value="GET">GET</option>
 											<option value="POST">POST</option>
@@ -143,9 +151,18 @@ $_defaultUrl = 'users';
 											<option value="COPY">COPY</option>
 										</select>
 									</div>
-									<label for="request-app" class="col-sm-2 control-label">App/API Key</label>
 
-									<div class="col-sm-4">
+									<label for="request-token" class="col-md-1 control-label">Token</label>
+									<div class="col-md-3">
+										<input type="text"
+											   class="form-control"
+											   id="request-token"
+											   value="<?php echo $_defaultToken; ?>"
+											   placeholder="The session token for this request">
+									</div>
+
+									<label for="request-app" class="col-md-1 control-label">App</label>
+									<div class="col-md-3">
 										<select class="form-control" id="request-app">
 											<optgroup label="Built-In">
 												<option value="admin">admin</option>
@@ -158,9 +175,9 @@ $_defaultUrl = 'users';
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="request-body" class="col-sm-2 control-label">Body</label>
+									<label for="request-body" class="col-md-1 control-label">Body</label>
 
-									<div class="col-sm-10">
+									<div class="col-md-11">
 										<textarea id="request-body" rows="2" class="form-control"></textarea>
 
 										<p class="help-block">Must be valid JSON</p>
@@ -208,7 +225,8 @@ $_defaultUrl = 'users';
 <script src="js/app.jquery.js"></script>
 <script>
 //	This needs to be last because _options is defined in app.jquery.js... lame, I know...
-_options.baseUrl = '<?php echo Curl::currentUrl( false, false ); ?>';
+_options.baseUrl = '<?php echo $_baseUrl; ?>';
+_options.defaultUri = '<?php echo $_defaultUri; ?>';
 _options.APPLICATION_NAME = '<?php echo APPLICATION_NAME; ?>';
 </script>
 </body>

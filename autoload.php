@@ -23,7 +23,8 @@
  */
 if ( !class_exists( '\\Yii', false ) )
 {
-	$_dspBase = realpath( __DIR__ );
+	$_dspBase = __DIR__;
+	$_realBase = realpath( $_dspBase );
 
 	while ( true )
 	{

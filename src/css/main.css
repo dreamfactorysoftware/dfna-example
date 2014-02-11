@@ -1,11 +1,17 @@
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,300,700,100);
+
 /**************************************************************************
 ** General Classes
 **************************************************************************/
 
 html, body {
 	height:      100%;
-	font-family: "Helvetica Neue Light", "HelveticaNeue-Light", "Helvetica Neue", Calibri, Helvetica, Arial, sans-serif;
+	font-family: Roboto, Helvetica, Arial, sans-serif;
 	/* The html and body elements cannot have any padding or margin. */
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
 code {
@@ -81,8 +87,9 @@ optgroup {
 }
 
 #wrap > .container h1:first-of-type {
-	border-bottom: 1px solid #efefef;
-	font-family:   'Lato', 'Helvetica Neue Light', Arial, sans-serif;
+	border-bottom:  1px solid #efefef;
+	font-family:    'Roboto', Helvetica, Arial, sans-serif;
+	letter-spacing: -1px;
 }
 
 #footer > .container {
@@ -151,7 +158,7 @@ ul li a:hover {
 	letter-spacing: -1px;
 	font-weight:    700;
 	color:          #efefef;
-	font-family:    'Lato', 'Helvetica Neue Light', Arial, sans-serif;
+	font-family:    'Roboto', Helvetica, Arial, sans-serif;
 	text-shadow:    0 1px 0 #e5e5ee;
 }
 
