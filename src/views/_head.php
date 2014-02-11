@@ -36,4 +36,5 @@
 	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto">
 
 	<link rel="stylesheet" href="css/main.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/prism.css">
 </head>

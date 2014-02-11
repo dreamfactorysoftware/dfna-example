@@ -24,6 +24,7 @@ use DreamFactory\Platform\Utility\ResourceStore;
 use DreamFactory\Platform\Yii\Models\App;
 use DreamFactory\Yii\Utility\Pii;
 use Kisma\Core\Utility\Curl;
+use Kisma\Core\Utility\FilterInput;
 use Kisma\Core\Utility\HtmlMarkup;
 
 //*************************************************************************
@@ -37,7 +38,7 @@ const APPLICATION_NAME = 'dfna';
 /**
  * @type bool If true, current URL will be used to determine WFA DSP URL
  */
-const USE_LOCALHOST = false;
+const USE_LOCALHOST = true;
 
 //********************************************************************************
 //* Bootstrap and Debugging
@@ -92,7 +93,7 @@ if ( !empty( $_models ) )
 }
 
 $_baseUrl = ( USE_LOCALHOST ? Curl::currentUrl( false, false ) : 'https://dfna-server.cloud.dreamfactory.com' ) . '/rest/wfa';
-$_defaultToken = 'b4hrvo7dgh15s9ficugall34l7';
+$_defaultToken = ( USE_LOCALHOST ? FilterInput::cookie( 'PHPSESSID' ) : null );
 $_defaultUri = '/users';
 ?>
 <!DOCTYPE html>
@@ -207,9 +208,7 @@ $_defaultUri = '/users';
 					</div>
 					<div id="call-results-body" class="panel-collapse collapse in">
 						<div class="panel-body">
-							<div id="example-code">
-								<small>Ready</small>
-							</div>
+							<div id="example-code"></div>
 						</div>
 					</div>
 				</div>
@@ -221,8 +220,9 @@ $_defaultUri = '/users';
 <?php require_once( 'views/_footer.php' ); ?>
 
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
-<script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+<!--<script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>-->
 <script src="js/app.jquery.js"></script>
+<script src="js/prism.js"></script>
 <script>
 //	This needs to be last because _options is defined in app.jquery.js... lame, I know...
 _options.baseUrl = '<?php echo $_baseUrl; ?>';

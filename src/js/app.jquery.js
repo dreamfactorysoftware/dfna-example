@@ -35,13 +35,15 @@ var _options = {
 	/** @var {*} **/
 	scrollPane:          null,
 	/** @var string **/
+	defaultCodeTemplate: '<small>Ready</small><pre id="pretty-code" style="display: none;"><code class="language-javascript"></code></pre>',
+	/** @var string **/
 	defaultUri:          '/users',
 	/** @var {*} **/
 	currentProvider:     {},
 	/** @var bool */
 	readOnly:            true,
 	/** @var {*} jQuery cache */
-	$:                   {request: {}, status: {}},
+	$:                   {request: {}, status: {}, prettyCode: null},
 
 	//    These are set in index.php (ugh)
 	/**
@@ -84,8 +86,22 @@ var _reset = function() {
 	_options.$.request.uri.val(_options.defaultUri);
 	_options.$.request.method.val('GET');
 	_options.$.request.app.val(_options.APPLICATION_NAME);
-	_options.$.results.html('<small>Ready</small>');
+	_options.$.results.html(_options.defaultCodeTemplate);
+
 	_loading(false);
+};
+
+/**
+ * Gets the div to write code in
+ * @returns {null}
+ * @private
+ */
+var _prettyCode = function() {
+	if (!_options.$.prettyCode || !_options.$.prettyCode.length) {
+		_options.$.prettyCode = $('pre#pretty-code');
+	}
+
+	return _options.$.prettyCode;
 };
 
 /**
@@ -100,6 +116,7 @@ var _loading = function(which) {
 		_options.$.page.css({cursor: 'default'});
 		$('#send-request').removeClass('disabled');
 		_options._stopTime = Date.now();
+		_options.$.results.find('small').html('Ready');
 
 		if (_options._startTime && _options._stopTime) {
 			_options._elapsed = _options._stopTime - _options._startTime;
@@ -111,6 +128,7 @@ var _loading = function(which) {
 		_options.$.loading.fadeIn().addClass('fa-spin');
 		_options.$.page.css({cursor: 'wait'});
 		$('#send-request').addClass('disabled');
+		_options.$.results.find('small').text('Loading...');
 
 		_options._startTime = Date.now();
 		_options.$.request.elapsed.empty().hide();
@@ -125,29 +143,29 @@ var _loading = function(which) {
  * @private
  */
 var _showResults = function(data, pretty) {
-	if (false === pretty) {
-		_options.$.results.html(data);
-	}
-	else {
-		_options.$.results.html('<pre class="prettyprint">' + _encodeXml(data) + '</pre>');
-
-		//noinspection JSUnresolvedFunction
-		PR.prettyPrint();
+	if (false !== pretty) {
+		data = _convertResults(data);
 	}
 
-	window.location.hash = 'dfna-results';
+	$('code', _prettyCode()).html(data);
+	_prettyCode().css({display: 'block'}).show();
+
+	//noinspection JSUnresolvedVariable
+	Prism.highlightAll(_options.$.prettyCode.find('code')[0]);
+
+	window.location.hash = 'call-results-body';
 	return true;
 };
 
 /**
  *
  * @param source
- * @returns {XML|string|Ext.dom.Element}
  * @private
+ * @returns {String}
  */
-var _encodeXml = function(source) {
-	return source.replace(/&/ig, "&amp;").replace(/</ig, "&lt;").replace(/>/ig, "&gt;").replace(/"/ig, "&quot;").replace(/±/ig, "&plusmn;").replace(/©/ig,
-		"&copy;").replace(/®/ig, "&reg;").replace(/ya'll/ig, "ya'll");
+var _convertResults = function(source) {
+	var _string = JSON.stringify(source, null, 4);
+	return _string || source;
 };
 
 /**
@@ -175,16 +193,17 @@ var _execute = function() {
 	var _raw = _options.$.request.body.val();
 	var _token = _options.$.request.token.val();
 	var _server = _options.$.request.server.html();
-	var $_code = _options.$.results;
+	var $_code = _prettyCode().find('code');
 
 	if (!_uri || !_uri.length) {
 		alert('Invalid Request URI specified.');
 		return false;
 	}
 
-	_uri += ( -1 == _uri.indexOf('?') ? '?' : '&') + 'format=json';
+//	_uri += ( -1 == _uri.indexOf('?') ? '?' : '&') + 'format=json';
 
-	$_code.empty().html('<small>Loading...</small>');
+	_options.$.results.find('small').html('Loading...');
+	_prettyCode().hide().find('code').empty();
 
 	try {
 		var _body = null;
@@ -195,10 +214,10 @@ var _execute = function() {
 
 		$.ajax({
 			url: _server + _uri,
-			async:       true,
 			type:        _method,
+			dataType:    'json',
 			cache:       false,
-//			processData: false,
+			processData: false,
 			data:        _body,
 			beforeSend:  function(xhr) {
 				_loading(true);
@@ -212,13 +231,14 @@ var _execute = function() {
 				return _showResults(data);
 			},
 			error:       function(err) {
+				if (err && err.responseJSON) {
+					return _showResults(err.responseJSON);
+				}
+
 				var _json = {};
 
 				try {
-					if (err.responseJSON) {
-						_json = err.responseJSON.error[0];
-					}
-					else if (err.responseText) {
+					if (err.responseText) {
 						_json = JSON.parse(err.responseText);
 						if (!_json) {
 							_json = err.responseText;
